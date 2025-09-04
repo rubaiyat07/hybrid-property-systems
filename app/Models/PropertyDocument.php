@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Expense extends Model
+class PropertyDocument extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'property_id',
-        'category',
-        'amount',
-        'description',
-        'date',
+        'doc_type',        // deed, mutation, registration, tax_receipt, others
+        'file_path',
+        'status',          // pending, approved, rejected
+        'uploaded_at'
     ];
 
     public function property()

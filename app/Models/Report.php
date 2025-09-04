@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Report extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'type',   // income, occupancy, sales, tax, utility
+        'period',
+        'file_path',
+    ];
 }

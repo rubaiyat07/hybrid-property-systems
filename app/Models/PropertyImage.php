@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class PropertyImage extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'property_id',
+        'file_path',
+        'is_primary',
+    ];
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
 }
