@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TenantController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\LeaseController;
 use App\Http\Controllers\PaymentController;
@@ -33,10 +35,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Routes
-    Route::middleware(['role:Admin'])->group(function () {
-        Route::resource('properties', PropertyController::class);
-        Route::resource('users', UserController::class);
+    Route::middleware(['auth','role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class,'dashboard'])->name('admin.dashboard');
+    Route::resource('properties', PropertyController::class);
+    Route::resource('tenants', TenantController::class);
     });
+
 
     // Landlord Routes
     Route::middleware(['role:Landlord'])->group(function () {
