@@ -35,11 +35,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Routes
-    Route::middleware(['auth','role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class,'dashboard'])->name('admin.dashboard');
+    Route::prefix('admin')->middleware(['auth','role:admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class,'dashboard'])->name('admin.dashboard');
     Route::resource('properties', PropertyController::class);
     Route::resource('tenants', TenantController::class);
-    });
+});
+
 
 
     // Landlord Routes
