@@ -9,7 +9,7 @@ use App\Models\Property;
 class AdminController extends Controller
 {
     // Admin dashboard
-    public function dashboard()
+    public function adminDashboard()
     {
         // Example data to show on dashboard
         $totalUsers = User::count();
