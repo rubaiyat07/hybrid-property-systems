@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\LeaseController;
@@ -17,42 +17,59 @@ use Illuminate\Support\Facades\Route;
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| be assigned to the "web" middleware group.
 |
 */
 
+// Welcome page
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Login redirect based on role
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+    if (!$user) {
+        return redirect()->route('login');
+    }
+
+    if ($user->hasRole('Admin')) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->hasRole('Landlord')) {
+        return redirect()->route('landlord.dashboard');
+    } elseif ($user->hasRole('Tenant')) {
+        return redirect()->route('tenant.dashboard');
+    }
+    abort(403); // Unknown role
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Authenticated user routes
 Route::middleware(['auth'])->group(function () {
+
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Routes
-    Route::prefix('admin')->middleware(['auth','role:admin'])->group(function () {
-    Route::get('/dashboard', [AdminController::class,'dashboard'])->name('admin.dashboard');
-    Route::resource('properties', PropertyController::class);
-    Route::resource('tenants', TenantController::class);
-});
-
-
+    Route::prefix('admin')->middleware(['role:Admin'])->group(function () {
+        Route::get('/dashboard', [AdminController::class,'adminDashboard'])->name('admin.dashboard');
+        Route::resource('properties', PropertyController::class);
+        Route::resource('tenants', TenantController::class);
+    });
 
     // Landlord Routes
-    Route::middleware(['role:Landlord'])->group(function () {
-        Route::resource('properties', PropertyController::class);
-        Route::resource('units', UnitController::class);
+    Route::prefix('landlord')->middleware(['role:Landlord'])->group(function () {
+        // Route::get('/dashboard', [UserController::class,'landlordDashboard'])->name('landlord.dashboard');
+        // Route::resource('properties', PropertyController::class);
+        // Route::resource('units', UnitController::class);
     });
 
     // Tenant Routes
-    Route::middleware(['role:Tenant'])->group(function () {
-        Route::resource('leases', LeaseController::class);
-        Route::resource('payments', PaymentController::class);
+    Route::prefix('tenant')->middleware(['role:Tenant'])->group(function () {
+        // Route::get('/dashboard', [UserController::class,'tenantDashboard'])->name('tenant.dashboard');
+        // Route::resource('leases', LeaseController::class);
+        // Route::resource('payments', PaymentController::class);
     });
 });
 
