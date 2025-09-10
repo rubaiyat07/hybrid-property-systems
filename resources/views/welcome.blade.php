@@ -15,24 +15,7 @@
     <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
 
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">HybridEstate</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#rent">House Rent</a></li>
-                <li><a href="#customers">Customers</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            {{-- <a href="#rent" class="cta-btn">Get Started</a> --}}
-            <div>
-                <a href="{{ route('login') }}" class="cta-btn">Log in</a>
-                <a href="{{ route('register') }}" class="cta-btn">Sign up</a>
-            </div>
-        </div>
-    </nav>
+    @include('partials.header')
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -197,43 +180,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer" id="contact">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>HybridEstate</h4>
-                <p>Revolutionizing property investment through innovative technology and sustainable practices.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#rent">House Rent</a></li>
-                    <li><a href="#customers">Customers</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Services</h4>
-                <ul>
-                    <li><a href="#">Investment Advisory</a></li>
-                    <li><a href="#">Property Management</a></li>
-                    <li><a href="#">Market Analysis</a></li>
-                    <li><a href="#">Portfolio Optimization</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Contact</h4>
-                <ul>
-                    <li><a href="mailto:info@hybridestate.com">info@hybridestate.com</a></li>
-                    <li><a href="tel:+1234567890">+1 (234) 567-890</a></li>
-                    <li><a href="#">Live Chat Support</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; {{ date('Y') }} HybridEstate. All rights reserved.</p>
-        </div>
-    </footer>
+    @include('partials.footer')
  
     <!--Custome js (welcome.js)-->
     <script src="{{ asset('js/welcome.js') }}"></script>
