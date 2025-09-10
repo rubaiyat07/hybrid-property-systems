@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
-    @include('partials.header')
-    @include('partials.sidebar')
+    <!-- @include('partials.header') -->
+    <!-- @include('partials.sidebar') -->
 
     <div class="content">
         @yield('content')
     </div>
 
-    @include('partials.footer')
+    <!-- @include('partials.footer') -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
