@@ -11,51 +11,51 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        // Create Roles using Spatie
+        // Creating Roles using Spatie
         $roles = ['Admin', 'Landlord', 'Tenant', 'Agent', 'Buyer', 'Maintenance'];
         foreach ($roles as $roleName) {
             Role::firstOrCreate(['name' => $roleName]);
         }
 
-        // Default Users with role_id mapping
+        // Default Users with role mapping
         $users = [
             [
-                'name' => 'Admin User',
+                'name' => 'Admin',
                 'email' => 'admin@example.com',
                 'phone' => '01710000001',
                 'password' => Hash::make('admin123'),
                 'role' => 'Admin',
             ],
             [
-                'name' => 'John Landlord',
+                'name' => 'Aftab Alamgir',
                 'email' => 'landlord@example.com',
                 'phone' => '01710000002',
                 'password' => Hash::make('landlord123'),
                 'role' => 'Landlord',
             ],
             [
-                'name' => 'Jane Tenant',
+                'name' => 'Jannat Ara',
                 'email' => 'tenant@example.com',
                 'phone' => '01710000003',
                 'password' => Hash::make('tenant123'),
                 'role' => 'Tenant',
             ],
             [
-                'name' => 'Alex Agent',
+                'name' => 'Hasanuzzaman Khan',
                 'email' => 'agent@example.com',
                 'phone' => '01710000004',
                 'password' => Hash::make('agent123'),
                 'role' => 'Agent',
             ],
             [
-                'name' => 'Bob Buyer',
+                'name' => 'Bashir Ahmed',
                 'email' => 'buyer@example.com',
                 'phone' => '01710000005',
                 'password' => Hash::make('buyer123'),
                 'role' => 'Buyer',
             ],
             [
-                'name' => 'Mike Maintenance',
+                'name' => 'Kalam Ali',
                 'email' => 'maintenance@example.com',
                 'phone' => '01710000006',
                 'password' => Hash::make('maintenance123'),
@@ -70,10 +70,10 @@ class UserSeeder extends Seeder
                     'name' => $data['name'],
                     'phone' => $data['phone'],
                     'password' => $data['password'],
-                    'role_id' => null, // যদি পরে DB relation করতে চান
                 ]
             );
 
+            // Assign role using Spatie
             $user->assignRole($data['role']);
         }
     }
