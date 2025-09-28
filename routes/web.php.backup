@@ -1,0 +1,261 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\TenantController;
+use App\Http\Controllers\UnitController;
+use App\Http\Controllers\LeaseController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\AdminPropertyController as AdminPropertyManagementController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group.
+|
+*/
+
+// Welcome page
+Route::get('/', function () {
+    return view('public_pages.welcome');
+})->name('public_pages.welcome');
+
+// Login redirect based on role
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+    if (!$user) {
+        return redirect()->route('login');
+    }
+
+    if ($user->hasRole('Admin')) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->hasRole('Landlord')) {
+        return redirect()->route('landlord.homepage');
+    } elseif ($user->hasRole('Tenant')) {
+        return redirect()->route('tenant.homepage');
+    } elseif ($user->hasRole('Agent')) {
+        return redirect()->route('agent.homepage');
+    } elseif ($user->hasRole('Buyer')) {
+        return redirect()->route('buyer.homepage');
+    } elseif ($user->hasRole('Maintenance')) {
+        return redirect()->route('maintenance.homepage');
+    }
+    abort(403); // Unknown role
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+// Authenticated user routes
+Route::middleware(['auth'])->group(function () {
+
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Admin Routes
+    Route::prefix('admin')->name('admin.')->middleware(['role:Admin'])->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [AdminController::class, 'adminDashboard'])->name('dashboard');
+        
+        // User Management
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::post('/users/{user}/ban', [UserController::class, 'ban'])->name('users.ban');
+        Route::post('/users/{user}/unban', [UserController::class, 'unban'])->name('users.unban');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::post('/users/bulk-action', [UserController::class, 'bulkAction'])->name('users.bulk-action');
+        
+        // Property Registration Management
+        Route::prefix('property')->name('property.')->group(function () {
+            Route::get('/', [AdminPropertyManagementController::class, 'index'])->name('index');
+            Route::get('/{property}', [AdminPropertyManagementController::class, 'show'])->name('show');
+            Route::get('/{property}/quick-view', [AdminPropertyManagementController::class, 'quickView'])->name('quick-view');
+            Route::post('/{property}/approve', [AdminPropertyManagementController::class, 'approve'])->name('approve');
+            Route::post('/{property}/reject', [AdminPropertyManagementController::class, 'reject'])->name('reject');
+            Route::put('/{property}/reset-pending', [AdminPropertyManagementController::class, 'resetToPending'])->name('reset-pending');
+
+            // Bulk Property Actions
+            Route::post('/bulk-approve', [AdminPropertyManagementController::class, 'bulkApprove'])->name('bulk-approve');
+            Route::post('/bulk-reject', [AdminPropertyManagementController::class, 'bulkReject'])->name('bulk-reject');
+
+            // Property Registration Dashboard
+            Route::get('/dashboard/stats', [AdminPropertyManagementController::class, 'dashboard'])->name('dashboard');
+        });
+        
+        // Original Property Management (for direct admin management)
+        Route::resource('properties', PropertyController::class);
+        
+        // Tenant Management
+        Route::resource('tenants', TenantController::class);
+        
+        // Unit Management
+        Route::resource('units', UnitController::class);
+        
+        // Lease Management
+        Route::resource('leases', LeaseController::class);
+        
+        // Payment Management
+        Route::resource('payments', PaymentController::class);
+        
+        // Reports
+        Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+        Route::get('/reports/income', [AdminController::class, 'incomeReport'])->name('reports.income');
+        Route::get('/reports/occupancy', [AdminController::class, 'occupancyReport'])->name('reports.occupancy');
+        
+        // Settings
+        Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+        Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+    });
+
+    // Landlord Routes
+    Route::prefix('landlord')->name('landlord.')->middleware(['role:Landlord'])->group(function () {
+        // Dashboard
+        Route::get('/homepage', [\App\Http\Controllers\LandlordController::class, 'landlordHomepage'])->name('homepage');
+        
+        // Property Registration and Management
+        Route::resource('property', PropertyController::class);
+        
+        // Property Resubmission
+        Route::post('property/{property}/resubmit', [PropertyController::class, 'resubmit'])
+             ->name('property.resubmit');
+        
+        // Units (under landlord's approved properties only)
+        Route::resource('units', UnitController::class)->except(['destroy']); 
+        Route::get('units/create/{property_id?}', [UnitController::class, 'create'])
+             ->name('units.create');
+        Route::get('property/{property}/units', [UnitController::class, 'getPropertyUnits'])
+             ->name('property.units');
+        
+        // Tenant Management (Full CRUD for landlord's tenants)
+        Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
+        Route::get('/tenants/create', [TenantController::class, 'create'])->name('tenants.create');
+        Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
+        Route::get('/tenants/{tenant}', [TenantController::class, 'show'])->name('tenants.show');
+        Route::get('/tenants/{tenant}/edit', [TenantController::class, 'edit'])->name('tenants.edit');
+        Route::put('/tenants/{tenant}', [TenantController::class, 'update'])->name('tenants.update');
+        Route::delete('/tenants/{tenant}', [TenantController::class, 'destroy'])->name('tenants.destroy');
+        
+        // AJAX Routes for Tenant Management
+        Route::get('/properties/{property}/units', [TenantController::class, 'getUnits'])->name('tenants.get-units');
+        Route::get('/tenants/search', [TenantController::class, 'search'])->name('tenants.search');
+        
+        // Tenant Communication
+        Route::get('/tenants/{tenant}/message', [TenantController::class, 'messageForm'])->name('tenants.message');
+        Route::post('/tenants/{tenant}/message', [TenantController::class, 'sendMessage'])->name('tenants.send-message');
+        
+        // Leases (landlord creates leases for tenants)
+        Route::resource('leases', LeaseController::class)->only(['index', 'show', 'create', 'store']);
+        
+        // Payments (landlord can view payments received)
+        Route::resource('payments', PaymentController::class)->only(['index', 'show']);
+    });
+
+    // Agent Routes (only approved properties)
+    Route::prefix('agent')->name('agent.')->middleware(['role:Agent'])->group(function () {
+        // Dashboard
+        Route::get('/homepage', [\App\Http\Controllers\AgentController::class, 'agentHomepage'])->name('homepage');
+        Route::get('/dashboard', [\App\Http\Controllers\AgentController::class, 'agentDashboard'])->name('dashboard');
+        
+        // Assigned Approved Properties
+        Route::get('/properties', [PropertyController::class, 'agentIndex'])->name('properties.index');
+        Route::get('/properties/{property}', [PropertyController::class, 'agentShow'])->name('properties.show');
+        
+        // Leads (agent manages potential buyers/tenants)
+        Route::resource('leads', \App\Http\Controllers\LeadController::class)->except(['destroy']);
+        
+        // Transactions (sales/rental transactions handled by agent)
+        Route::resource('transactions', \App\Http\Controllers\TransactionController::class)->only(['index', 'show', 'create', 'store']);
+    });
+
+    // Tenant Routes (Individual Tenant Dashboard)
+    Route::prefix('tenant')->name('tenant.')->middleware(['role:Tenant'])->group(function () {
+        Route::get('/homepage', [DashboardController::class, 'tenantDashboard'])->name('homepage');
+        Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
+        
+        // Tenant's Property Browsing
+        Route::get('/properties/browse', [PropertyController::class, 'tenantBrowse'])->name('properties.browse');
+        Route::get('/properties/{property}', [PropertyController::class, 'tenantShow'])->name('properties.show');
+        
+        // Tenant's Current Lease
+        Route::get('/lease/current', [LeaseController::class, 'currentLease'])->name('lease.current');
+        Route::get('/leases', [LeaseController::class, 'tenantLeases'])->name('leases.index');
+        Route::get('/leases/{lease}', [LeaseController::class, 'tenantShow'])->name('leases.show');
+        
+        // Tenant's Payments
+        Route::get('/payments', [PaymentController::class, 'tenantPayments'])->name('payments.index');
+        Route::get('/payments/{payment}', [PaymentController::class, 'tenantShow'])->name('payments.show');
+        Route::post('/payments/{payment}/pay', [PaymentController::class, 'processPayment'])->name('payments.pay');
+        
+        // Maintenance Requests
+        Route::get('/maintenance', [TenantController::class, 'maintenanceRequests'])->name('maintenance.index');
+        Route::get('/maintenance/create', [TenantController::class, 'createMaintenanceRequest'])->name('maintenance.create');
+        Route::post('/maintenance', [TenantController::class, 'storeMaintenanceRequest'])->name('maintenance.store');
+        Route::get('/maintenance/{request}', [TenantController::class, 'showMaintenanceRequest'])->name('maintenance.show');
+        
+        // Tenant Documents
+        Route::get('/documents', [TenantController::class, 'documents'])->name('documents.index');
+        Route::post('/documents', [TenantController::class, 'uploadDocument'])->name('documents.upload');
+        
+        // Tenant Support
+        Route::get('/support', [TenantController::class, 'support'])->name('support.index');
+        Route::post('/support', [TenantController::class, 'submitSupportTicket'])->name('support.submit');
+        
+        // Tenant Screening & Applications
+        Route::get('/screening/status', [TenantController::class, 'screeningStatus'])->name('screening.status');
+        Route::get('/applications', [TenantController::class, 'applications'])->name('applications.index');
+        Route::post('/applications/{property}', [TenantController::class, 'submitApplication'])->name('applications.submit');
+        
+        // Tenant Profile & Notifications
+        Route::get('/profile/edit', [TenantController::class, 'editProfile'])->name('profile.edit');
+        Route::put('/profile', [TenantController::class, 'updateProfile'])->name('profile.update');
+        Route::get('/notifications', [TenantController::class, 'notifications'])->name('notifications.index');
+    });
+
+    // Buyer Routes (only approved, active properties)
+    Route::prefix('buyer')->name('buyer.')->middleware(['role:Buyer'])->group(function () {
+        Route::get('/homepage', [DashboardController::class, 'buyerDashboard'])->name('homepage');
+        Route::get('/dashboard', [DashboardController::class, 'buyerDashboard'])->name('dashboard');
+        Route::get('/properties', [PropertyController::class, 'buyerIndex'])->name('properties.index');
+        Route::get('/properties/{property}', [PropertyController::class, 'buyerShow'])->name('properties.show');
+        Route::get('/favorites', [\App\Http\Controllers\BuyerController::class, 'favorites'])->name('favorites');
+        Route::post('/favorites/{property}', [\App\Http\Controllers\BuyerController::class, 'toggleFavorite'])->name('favorites.toggle');
+    });
+
+    // Maintenance Routes
+    Route::prefix('maintenance')->name('maintenance.')->middleware(['role:Maintenance'])->group(function () {
+        Route::get('/homepage', [DashboardController::class, 'maintenanceDashboard'])->name('homepage');
+        Route::get('/dashboard', [DashboardController::class, 'maintenanceDashboard'])->name('dashboard');
+        Route::get('/requests', [\App\Http\Controllers\MaintenanceController::class, 'index'])->name('requests.index');
+        Route::get('/requests/{request}', [\App\Http\Controllers\MaintenanceController::class, 'show'])->name('requests.show');
+        Route::put('/requests/{request}', [\App\Http\Controllers\MaintenanceController::class, 'update'])->name('requests.update');
+        Route::get('/schedule', [\App\Http\Controllers\MaintenanceController::class, 'schedule'])->name('schedule');
+    });
+
+    // Common routes for multiple roles
+    Route::middleware(['role:Admin,Landlord,Tenant,Agent,Buyer,Maintenance'])->group(function () {
+        Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+        
+        Route::get('/messages', [\App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
+        Route::post('/messages', [\App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
+        Route::get('/messages/{user}', [\App\Http\Controllers\MessageController::class, 'conversation'])->name('messages.conversation');
+    });
+});
+
+// Public property listings (no authentication required) - show only approved properties
+Route::get('/public-properties', [PropertyController::class, 'buyerIndex'])->name('public.properties.index');
+Route::get('/public-properties/{property}', [PropertyController::class, 'buyerShow'])->name('public.properties.show');
+
+require __DIR__.'/auth.php';
