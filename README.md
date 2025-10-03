@@ -1,10 +1,3 @@
-ওকে 👍 তাহলে Bootstrap বাদ দিয়ে TailwindCSS ব্যবহার করা হয়েছে সেটা আপডেট করে দিচ্ছি। বাকিটা একই থাকবে।
-
----
-
-# 📘 Updated README.md (with Tailwind)
-
-````markdown
 # 🏢 Automated Property Management System
 
 A **comprehensive rental & property management solution** built with **Laravel + Blade + TailwindCSS**.  
