@@ -1,66 +1,165 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+ওকে 👍 তাহলে Bootstrap বাদ দিয়ে TailwindCSS ব্যবহার করা হয়েছে সেটা আপডেট করে দিচ্ছি। বাকিটা একই থাকবে।
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+# 📘 Updated README.md (with Tailwind)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+````markdown
+# 🏢 Automated Property Management System
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+A **comprehensive rental & property management solution** built with **Laravel + Blade + TailwindCSS**.  
+The system is designed to handle property rentals, leases, payments, utilities, tax management, and sales transactions under one platform.  
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+It enables **Admins, Owners, Tenants, and other stakeholders** to efficiently manage properties, rental agreements, maintenance, payments, and reports.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🔹 Current Scope
+✔ Authentication (Admin, Owner, Tenant)  
+✔ Property Management (CRUD, Units, Facilities, Gallery)  
+✔ Tenant Management (Registration, Assign to unit, Rental history)  
+✔ Lease & Agreement Module (create, renew, terminate)  
+✔ Client Portal with inquiry & booking system  
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🔹 Pending / Future Enhancements
+⏳ Rent Collection & Payment Tracking  
+⏳ Maintenance Request Tracking  
+⏳ Tax & Utility Bill Management  
+⏳ Reports & Analytics (Basic) 
+⏳ Agent & Buyer Module (profile, commission, sales leads)  
+⏳ Real Estate Sales Management (property sales, contracts, milestones)  
+⏳ CRM & Lead Management (buyer inquiry, follow-up, conversion)  
+⏳ Online Payment Gateway (Stripe/SSLCommerz)  
+⏳ Email/SMS Notification System  
+⏳ Multi-language Support (English/Bangla)  
+⏳ Document Storage on Cloud (S3/Drive)  
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## 🔹 Core Modules (Implemented + Planned)
 
-### Premium Partners
+### 1. Authentication & User Management
+- Multi-role login (Admin, Owner, Tenant, Agent, Buyer)  
+- Profile & document management  
+- Role-based dashboard access  
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### 2. Property Management
+- Property CRUD (Add/Edit/Delete)  
+- Unit/Flat/Room management  
+- Facilities (parking, utilities, etc.)  
+- Gallery & image upload  
+- Property legal document submission & admin approval  
+- Ownership history tracking  
 
-## Contributing
+### 3. Tax & Utility Management
+- Property tax records & receipts  
+- Annual tax submission tracking  
+- Utility bills (electricity, water, gas, internet)  
+- Bill payment + receipt upload (Owner)  
+- Admin verification  
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Tenant & Lease Management
+- Tenant registration & approval  
+- Assign tenant to property/unit  
+- Rental history (agreements, payments)  
+- Lease agreements (create, renew, terminate)  
+- Agreement document upload  
 
-## Code of Conduct
+### 5. Rent & Payment
+- Rent collection & tracking  
+- Payment history records  
+- Invoice generation (Blade/PDF)  
+- Overdue reminders  
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. Maintenance Requests
+- Tenant submits request  
+- Status tracking (Pending/In Progress/Completed)  
+- Maintenance cost logging  
 
-## Security Vulnerabilities
+### 7. Reports & Analytics
+- Income & Expense Reports  
+- Occupancy Reports  
+- Tenant Payment Compliance  
+- Property Tax & Bill Reports  
+- Owner-wise Liability Summary  
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🛠 Tech Stack
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Frontend (UI Layer)
+- Blade Templates (Laravel default)  
+- TailwindCSS (Responsive UI)  
+- Vanilla JavaScript / Alpine.js (for interactivity)  
+- Font Awesome / Heroicons  
+
+### Backend (Application Layer)
+- Laravel 9.52.20  
+- PHP 8.0.30  
+- Laravel Breeze / UI (Authentication)  
+- Spatie Roles & Permissions (RBAC)  
+- Laravel Sanctum (API auth for portal/app)  
+- Laravel Excel (Export/Import data)  
+- Laravel Notifications (Email/SMS alerts)  
+- Spatie Activity Log (Audit log)  
+
+### Database
+- MySQL (`hybrid_property_system` DB for testing)  
+- Eloquent ORM  
+- Pivot tables for many-to-many relations (e.g. Agents ↔ Properties, Buyers ↔ Interests)  
+- Migration & Seeder support  
+
+### Utilities & Tools
+- Composer (Dependency Manager)  
+- NPM (JS/CSS build, Tailwind compiling)  
+- Artisan CLI  
+- Vite (Asset bundler for Tailwind/JS)  
+- Git (Version Control)  
+- Debugging: Laravel Debugbar, Telescope (dev only)  
+- Horizon (for queues, if notifications added)  
+
+---
+
+## ⚙️ Installation & Setup
+
+### 🔹 Clone & Install
+```bash
+git clone https://github.com/rubaiyat07/hybrid-property-system.git
+cd hybrid-property-system
+composer install
+npm install && npm run dev
+cp .env.example .env
+php artisan key:generate
+````
+
+### 🔹 Database
+
+```bash
+php artisan migrate --seed
+```
+
+### 🔹 Run Server
+
+```bash
+php artisan serve
+```
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 👨‍💻 Author
+
+**Rubaiyat Afreen**
+📧 Email: [rubaiyat97wd@gmail.com](mailto:rubaiyat97wd@gmail.com)
+🌐 GitHub: [rubaiyat07](https://github.com/rubaiyat07)
+
+```
+
+---
